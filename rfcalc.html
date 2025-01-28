@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Comprimento de Onda e Frequência</title>
+    <style>
+        /* Estilos básicos para a página */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .radio-group {
+            margin-bottom: 15px;
+        }
+
+        .radio-group label {
+            display: inline-block;
+            margin-right: 10px;
+            font-weight: normal;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <!-- Cabeçalho com créditos -->
+        <h1>Calculadora construída para fins educativos.</h1>
+
+        <h2>Inserir abaixo Comprimento de Onda para descobrir a Frequência correspondente ou a Frequência para descobrir o comprimento de onda.</h2>
+
+        <h2>Prof. Marcelino Junior</h2>
+
+        <!-- Campo para inserir a frequência -->
+        <label for="frequency">Frequência:</label>
+        <input type="number" id="frequency" placeholder="Insira a frequência">
+
+        <!-- Botões de rádio para selecionar a unidade da frequência -->
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="frequencyUnit" value="Hz" checked> Hz
+            </label>
+            <label>
+                <input type="radio" name="frequencyUnit" value="kHz"> kHz
+            </label>
+            <label>
+                <input type="radio" name="frequencyUnit" value="MHz"> MHz
+            </label>
+            <label>
+                <input type="radio" name="frequencyUnit" value="GHz"> GHz
+            </label>
+        </div>
+
+        <!-- Campo para inserir o comprimento de onda -->
+        <label for="wavelength">Comprimento de Onda:</label>
+        <input type="number" id="wavelength" placeholder="Insira o comprimento de onda">
+
+        <!-- Botões de rádio para selecionar a unidade do comprimento de onda -->
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="wavelengthUnit" value="m" checked> Metros (m)
+            </label>
+            <label>
+                <input type="radio" name="wavelengthUnit" value="cm"> Centímetros (cm)
+            </label>
+        </div>
+
+        <!-- Botão para calcular -->
+        <button onclick="calculate()">Calcular</button>
+
+        <!-- Área para exibir o resultado -->
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // Função para calcular o comprimento de onda ou a frequência
+        function calculate() {
+            // Obtém os valores dos campos de entrada
+            const frequency = parseFloat(document.getElementById('frequency').value);
+            const wavelength = parseFloat(document.getElementById('wavelength').value);
+
+            // Obtém a unidade selecionada para a frequência
+            const frequencyUnit = document.querySelector('input[name="frequencyUnit"]:checked').value;
+
+            // Obtém a unidade selecionada para o comprimento de onda
+            const wavelengthUnit = document.querySelector('input[name="wavelengthUnit"]:checked').value;
+
+            // Verifica se a frequência foi inserida e calcula o comprimento de onda
+            if (frequency && !wavelength) {
+                // Converte a frequência para Hz
+                let frequencyInHz = frequency;
+                switch (frequencyUnit) {
+                    case 'kHz':
+                        frequencyInHz = frequency * 1e3;
+                        break;
+                    case 'MHz':
+                        frequencyInHz = frequency * 1e6;
+                        break;
+                    case 'GHz':
+                        frequencyInHz = frequency * 1e9;
+                        break;
+                }
+
+                const speedOfLight = 3e8; // Velocidade da luz no vácuo em m/s
+                const calculatedWavelength = speedOfLight / frequencyInHz;
+
+                // Converte o comprimento de onda para a unidade selecionada
+                let wavelengthText;
+                if (wavelengthUnit === 'cm') {
+                    wavelengthText = `${(calculatedWavelength * 100).toFixed(2)} cm`;
+                } else {
+                    wavelengthText = `${calculatedWavelength.toFixed(2)} m`;
+                }
+
+                document.getElementById('result').innerText = `Comprimento de Onda: ${wavelengthText}`;
+            }
+            // Verifica se o comprimento de onda foi inserido e calcula a frequência
+            else if (wavelength && !frequency) {
+                // Converte o comprimento de onda para metros
+                let wavelengthInMeters = wavelength;
+                if (wavelengthUnit === 'cm') {
+                    wavelengthInMeters = wavelength / 100;
+                }
+
+                const speedOfLight = 3e8; // Velocidade da luz no vácuo em m/s
+                const calculatedFrequency = speedOfLight / wavelengthInMeters;
+
+                // Converte a frequência para a unidade selecionada
+                let frequencyText;
+                switch (frequencyUnit) {
+                    case 'kHz':
+                        frequencyText = `${(calculatedFrequency / 1e3).toFixed(2)} kHz`;
+                        break;
+                    case 'MHz':
+                        frequencyText = `${(calculatedFrequency / 1e6).toFixed(2)} MHz`;
+                        break;
+                    case 'GHz':
+                        frequencyText = `${(calculatedFrequency / 1e9).toFixed(2)} GHz`;
+                        break;
+                    default:
+                        frequencyText = `${calculatedFrequency.toFixed(2)} Hz`;
+                }
+
+                document.getElementById('result').innerText = `Frequência: ${frequencyText}`;
+            }
+            // Caso ambos os campos estejam preenchidos ou vazios
+            else {
+                document.getElementById('result').innerText = 'Por favor, insira apenas um valor (frequência ou comprimento de onda).';
+            }
+        }
+    </script>
+
+</body>
+</html>
