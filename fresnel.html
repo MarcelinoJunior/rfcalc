@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora do Raio da Primeira Zona de Fresnel</title>
+    <style>
+        /* Estilos básicos para a calculadora */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .radio-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora para encontrar o Raio R0 da Primeira Zona de Fresnel</h1>
+        <p class="subtitle">Calculadora para fins acadêmicos desenvolvida por Marcelino D. da S. Junior</p>
+
+        <label for="frequency">Frequência (F):</label>
+        <input type="number" id="frequency" placeholder="Informe a frequência">
+
+        <div class="radio-group">
+            <input type="radio" id="mhz" name="frequencyUnit" value="mhz" checked>
+            <label for="mhz">Megahertz (MHz)</label><br>
+            <input type="radio" id="ghz" name="frequencyUnit" value="ghz">
+            <label for="ghz">Gigahertz (GHz)</label>
+        </div>
+
+        <label for="distance">Distância total do link (D, em quilômetros):</label>
+        <input type="number" id="distance" placeholder="Informe a distância total do link">
+
+        <label for="d1">Distância da antena de transmissão ao ponto (D1, em quilômetros):</label>
+        <input type="number" id="d1" placeholder="Informe D1">
+
+        <label for="d2">Distância do ponto à segunda antena (D2, em quilômetros):</label>
+        <input type="number" id="d2" placeholder="Informe D2">
+
+        <button onclick="calculateFresnelRadius()">Calcular Raio da Primeira Zona de Fresnel</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateFresnelRadius() {
+            const frequencyInput = parseFloat(document.getElementById('frequency').value);
+            const distance = parseFloat(document.getElementById('distance').value);
+            const d1 = parseFloat(document.getElementById('d1').value);
+            const d2 = parseFloat(document.getElementById('d2').value);
+
+            if (isNaN(frequencyInput) || isNaN(distance) || isNaN(d1) || isNaN(d2) || frequencyInput <= 0 || distance <= 0 || d1 <= 0 || d2 <= 0 || Math.abs(d1 + d2 - distance) > 0.01) {
+                document.getElementById('result').innerText = 'Por favor, verifique se todos os valores foram preenchidos corretamente e se D1 + D2 = D.';
+                return;
+            }
+
+            const frequencyUnit = document.querySelector('input[name="frequencyUnit"]:checked').value;
+            let fresnelRadius;
+
+            if (frequencyUnit === 'ghz') {
+                fresnelRadius = 17.29 * Math.sqrt((d1 * d2) / (distance * frequencyInput));
+            } else if (frequencyUnit === 'mhz') {
+                fresnelRadius = 550 * Math.sqrt((d1 * d2) / (distance * frequencyInput));
+            } else {
+                document.getElementById('result').innerText = 'Erro inesperado: unidade de frequência inválida.';
+                return;
+            }
+
+            document.getElementById('result').innerText = `Raio da Primeira Zona de Fresnel: ${fresnelRadius.toFixed(2)} metros.`;
+        }
+    </script>
+</body>
+</html>
