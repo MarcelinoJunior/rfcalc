@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora EIRP - Professor Marcelino D Junior</title>
+</head>
+<body>
+    <h1>Calculadora de EIRP Simplificada</h1>
+    <p>Esta calculadora é destinada para fins educativos e deve ser utilizada pelos alunos da Uninove.</p>
+
+    <!-- Formulário para cálculo de EIRP -->
+    <form id="eirp-form">
+        <label for="potencia">Potência do Transmissor:</label>
+        <input type="number" id="potencia" placeholder="Potência em watts ou dB" required>
+        <br>
+
+        <!-- Botões de rádio para escolher a unidade de medida (watts ou dB) -->
+        <label for="unidade">Selecione a Unidade de Medida:</label>
+        <input type="radio" id="watts" name="unidade" value="watts" checked> Watts
+        <input type="radio" id="db" name="unidade" value="db"> dB
+        <br>
+
+        <label for="atenuacao">Atenuação dos Passivos (Perda de Inserção) [dB]:</label>
+        <input type="number" id="atenuacao" placeholder="Atenuação em dB" required>
+        <br>
+
+        <!-- Novo campo para o ganho da antena -->
+        <label for="ganho">Ganho da Antena [dBi]:</label>
+        <input type="number" id="ganho" placeholder="Ganho da antena em dBi" required>
+        <br>
+
+        <!-- Botão para realizar o cálculo -->
+        <button type="button" onclick="calcularEIRP()">Calcular EIRP</button>
+    </form>
+
+    <!-- Resultado do cálculo -->
+    <h3>Resultado do Cálculo de EIRP:</h3>
+    <p id="resultado">O EIRP será exibido aqui.</p>
+
+    <script>
+        // Função para calcular o EIRP
+        function calcularEIRP() {
+            // Obtendo os valores inseridos pelo usuário
+            let potencia = parseFloat(document.getElementById('potencia').value);
+            let atenuacao = parseFloat(document.getElementById('atenuacao').value);
+            let ganho = parseFloat(document.getElementById('ganho').value);
+            
+            // Obtendo a unidade de medida escolhida
+            let unidade = document.querySelector('input[name="unidade"]:checked').value;
+
+            // Explicação da fórmula
+            // A fórmula do EIRP é dada por: EIRP = Potência Transmitida - Atenuação dos Passivos + Ganho da Antena
+            // Se a unidade for em dB, o cálculo já está em dB.
+            // Se a unidade for em watts, convertemos para dB antes de calcular.
+
+            // Conversão de potência de watts para dB (se necessário)
+            if (unidade === 'watts') {
+                // Fórmula para converter de watts para dB: P(dB) = 10 * log10(P(watts) / 1)
+                potencia = 10 * Math.log10(potencia / 1);
+            }
+
+            // Calculando o EIRP em dB
+            let eirp = potencia - atenuacao + ganho;
+
+            // Exibindo o resultado
+            document.getElementById('resultado').innerHTML = `EIRP Calculado: ${eirp.toFixed(2)} dB`;
+
+            // Explicação da fórmula:
+            // EIRP (Equivalent Isotropically Radiated Power) é a potência irradiada por uma antena,
+            // levando em consideração a potência transmitida, a atenuação dos passivos do cabo,
+            // e o ganho da antena. Quanto maior o EIRP, mais eficaz a transmissão.
+        }
+    </script>
+</body>
+</html>
